@@ -5,19 +5,36 @@
 
 <mapper namespace="com.xunn.EmployeeMapper">
     <insert id="insertEmployee">
-        insert into t_emp (emp_name,emp_salary) values (#{empName},#{empSalary})
+        insert into t_emp (emp_name,emp_salary)
+        values
+        (
+        <if test="empName != null and empName != ''">
+            #{empName},
+        </if>
+        <if test="empSalary != null and empSalary != ''">
+            #{empSalary}
+        </if>
+        )
     </insert>
 
     <delete id="deleteEmployee">
-        delete from t_emp where emp_id=#{empId}
+        delete from ${var} where emp_id=${empId}
     </delete>
 
     <update id="updateEmployee">
         update t_emp set emp_name=#{param2} where emp_id=#{param1}
     </update>
 
+    <sql id = "sominclude">
+        from ${tablename}
+    </sql>
+
     <select id="selectEmployee" resultType="com.xunn.Employee">
-        select emp_id empId, emp_name empName,emp_salary empSalary from t_emp where emp_id=#{empId}
+        select emp_id empId, emp_name empName,emp_salary empSalary
+        <include refid="sominclude">
+            <property name="tablename" value="t_emp"/>
+        </include>
+        where emp_id=#{empId}
     </select>
 
 
